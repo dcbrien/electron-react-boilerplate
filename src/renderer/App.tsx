@@ -1,7 +1,29 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  HashRouter as Router,
+  Routes,
+  Route,
+  Outlet,
+  Link,
+} from 'react-router-dom';
 import { useState } from 'react';
 import icon from '../../assets/icon.svg';
+import Page2Test from './page2.tsx';
 import './App.css';
+
+function Layout() {
+  return (
+    <>
+      <div id="topbar">
+        <Link to="/page1">Page 1</Link>
+        <Link to="/page2">Page 2</Link>
+      </div>
+      <hr />
+      <div id="CurrPage">
+        <Outlet />
+      </div>
+    </>
+  );
+}
 
 function Hello() {
   return (
@@ -53,7 +75,7 @@ function MyButton() {
   );
 }
 
-function Square({value, onSquareClick }) {
+function Square({ value, onSquareClick }) {
   return (
     <button className="square" onClick={onSquareClick}>
       {value}
@@ -69,9 +91,9 @@ function Board({ xIsNext, squares, onPlay }) {
 
     const nextSquares = squares.slice();
     if (xIsNext) {
-      nextSquares[i] = "X";
+      nextSquares[i] = 'X';
     } else {
-      nextSquares[i] = "O";
+      nextSquares[i] = 'O';
     }
     onPlay(nextSquares);
   }
@@ -79,34 +101,34 @@ function Board({ xIsNext, squares, onPlay }) {
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
-    status = "Winner: " + winner;
+    status = `Winner: ${winner}`;
   } else {
-    status = "Next player: " + (xIsNext ? "X" : "O");
+    status = `Next player: ${xIsNext ? 'X' : 'O'}`;
   }
 
   return (
     <>
       <div className="status">{status}</div>
       <div className="board-row">
-        <Square value={squares[0]} onSquareClick={() =>handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() =>handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() =>handleClick(2)} />
+        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
+        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
+        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
       </div>
       <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() =>handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() =>handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() =>handleClick(5)} />
+        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
+        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
+        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
       </div>
       <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() =>handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() =>handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() =>handleClick(8)} />
+        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
+        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
+        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
       </div>
     </>
   );
 }
 
-export default function Game() {
+function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
@@ -125,7 +147,7 @@ export default function Game() {
   const moves = history.map((squares, move) => {
     let description;
     if (move > 0) {
-      description = 'Go to move #' + move;
+      description = `Go to move #${move}`;
     } else {
       description = 'Go to game start';
     }
@@ -157,7 +179,7 @@ function calculateWinner(squares) {
     [1, 4, 7],
     [2, 5, 8],
     [0, 4, 8],
-    [2, 4, 6]
+    [2, 4, 6],
   ];
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
@@ -168,16 +190,15 @@ function calculateWinner(squares) {
   return null;
 }
 
-/* export default function App() {
+export default function App() {
   return (
-    <MyButton />
-    /*
-    <Router>s
+    <Router>
       <Routes>
-        <Route path="/" element={<Hello />} />
-        <MyButton />
+        <Route path="/" element={<Layout />}>
+          <Route path="page1" element={<Hello />} />
+          <Route path="page2" element={<Game />} />
+        </Route>
       </Routes>
     </Router>
-
   );
-} */
+}
